@@ -14,6 +14,9 @@ The pipeline employs three primary Python programs:
 
 and one file handling script:
 <P><tt><B>linepick_v7.7.2.py</B> </tt>– which simply extracts single-sample statistics and paired-sample statistics from the output of JS_entropy_v7.7.py and assembles them into summary files for groupwise analysis.  Current version is filename dependent and can be replaced by a more flexible input function, or shell scripting.
+  
+Additionally, we used:
+<P><tt><B>multiple_joint_kde.py</B></tt>, available through the <A HREF="http://seaborn.pydata.org/">Seaborn</A> visualization library for python (<A HREF="https://github.com/mwaskom/seaborn">https://github.com/mwaskom/seaborn</A>).
 
 <h1>Implementation</h1>
 Place the python scripts in the working directory containing tabulated repertoire files, such as those provided for export by Adaptive for the Immunoseq sequencing analysis. These versions are formatted to accommodate the columns associated with their v3.0 export(46 columns).
@@ -57,7 +60,7 @@ In <tt>[samplename]_only.productive.tsv</tt>, data columns are as follows:
 After running JS_splitter_Imsqv4.5.py, in the working directory, each input sample file is represented by <tt>[samplename]_only.productive.tsv</tt>.  For each pair of samples, <tt>filename1</tt> and <tt>filename2</tt> are therefore now represented by <tt>filename1 = [samplename1]_only.productive.tsv</tt> and <tt>filename2 = [samplename1]_only.productive.tsv</tt>.
 
 <P><h3>Output:</h3>
-A new directory is created and named <tt>[samplename1]_[samplename2]</tt>.  In this directory, paired repertoire files (frequencies of each TCR in each of the two samples) will be produced for each resolution, and a file of individual and comparative entropy-based statistics, including a sample size control for the Jensen-Shannon Divergence Metric (JSM) which samples repertoire 1 to the number of clonotypes as repertoire 2.  For more details on this operation, see <A HREF="https://www.ncbi.nlm.nih.gov/pubmed/27261081">Sims et al. (2016)</A>.  Note that Evenness = 1-Clonality = Hnorm = H/Hmax, where H is entropy, Hmax (maximum entropy) = Nlog2(N), therefore Hnorm signifies normalized entropy.
+A new directory is created and named <tt>[samplename1]_[samplename2]</tt>.  In this directory, paired repertoire files (frequencies of each TCR in each of the two samples) will be produced for each resolution, and a file of individual and comparative entropy-based statistics, including a sample size control for the Jensen-Shannon Divergence Metric (JSM) which samples repertoire 1 to the number of clonotypes as repertoire 2.  For more details on this operation, see <A HREF="https://www.ncbi.nlm.nih.gov/pubmed/27261081">Sims et al. (2016)</A>.  Note that Evenness = 1-Clonality = Hnorm = H/Hmax, where H is entropy, Hmax (maximum entropy) = log2(N), therefore Hnorm signifies normalized entropy.
 
 <P>The output file <tt>[samplename1]_[samplename2]_H_CL_JS.out</tt> contains:
 <P>Line0: headers for single-repertoire output
@@ -70,9 +73,9 @@ A new directory is created and named <tt>[samplename1]_[samplename2]</tt>.  In t
 <LI>Col4 = CLcdr3 (aaCDR3 clonality)
 <LI>Col5 = CLvj (VJ clonality)
 <LI>Col6 = CLtot (totCDR3 clonality)
-<LI>Col7 = Hcdr3_max (maximum aaCDR3 entropy; -log2(N) where N is aaCDR3 population size)
-<LI>Col8 = Hvj_max (maximum VJ entropy; -log2(N) where N is VJ population size)
-<LI>Col9 = Htot_max (maximum totCDR3 entropy; -log2(N) where N is totCDR3 population size)
+<LI>Col7 = Hcdr3_max (maximum aaCDR3 entropy; log2(N) where N is aaCDR3 population size)
+<LI>Col8 = Hvj_max (maximum VJ entropy; log2(N) where N is VJ population size)
+<LI>Col9 = Htot_max (maximum totCDR3 entropy; log2(N) where N is totCDR3 population size)
 <LI>Col10 = Num_CDR3 (number of unique aaCDR3)
 <LI>Col11 = Num_VJ (number of unique VJ combinations)
 <LI>Col12 = Num_totCDR3 (number of unique totCDR3 clonotypes)
@@ -146,7 +149,7 @@ Produces tabulated output file <tt>[samplename]_aaCDR3perVJ.tsv</tt>, with colum
 <LI>Col0:  VJcombo (name of V-J cassette combination)
 <LI>Col1:  Number_aaCDR3 (number of aaCDR3 encoded by VJcombo in Col0)
 <LI>Col2:  H_aaCDR3 (entropy of aaCDR3 encoded by VJcombo in Col0)
-<LI>Col3:  Hnorm_aaCDR3 (entropy of aaCDR3 encoded by VJcombo in Col0, divided by maximum entropy; -log2(N) where N is aaCDR3 population size)
+<LI>Col3:  Hnorm_aaCDR3 (entropy of aaCDR3 encoded by VJcombo in Col0, divided by maximum entropy; log2(N) where N is aaCDR3 population size)
 </UL>
 
 <h3>Example:</h3>
